@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>My First App</title>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.0/jquery.mobile-1.4.0.min.css" />
+<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+<script src="http://code.jquery.com/mobile/1.4.0/jquery.mobile-1.4.0.min.js"></script>
+<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+</head>
+<body>
+
+<script>
+  $(document).ready(function (){
+  $.ajax({
+  url : "http://api.wunderground.com/api/bcd56c6506a67ec1/geolookup/conditions/q/CA.json",
+  dataType : "jsonp",
+  success : function(parsed_json) {
+  console.log(parsed_json['response']['results']);
+ var locations = parsed_json['response']['results'];
+
+  var i;
+  for(i=0; i< locations.length ; i++)
+  {
+  $("#citylistdiv ul").append( '<li onclick="test(\''+locations[i]['name']+'\')" class="ui-first-child ui-last-child"><a href="#first" data-transition="slide" class="ui-btn ui-btn-icon-right ui-icon-carat-r">' + locations[i]['name'] + "</a> </li>");
+  }
+
+  }
+  });
+});
+ 
+ 
+ $(document).ready(function (){
+  $.ajax({
+  url : "http:/localhost/restful/?name=c",
+  dataType : "jsonp",
+  success : function(parsed_json) {
+  
+ var locations = parsed_json['data'];
+
+  $("#citylistdiv ul").append( '<li class="ui-first-child ui-last-child"><a href="#" data-transition="slide" class="ui-btn ui-btn-icon-right ui-icon-carat-r">' + locations + "</a> </li>");
+  
+
+  }
+  });
+});
+ 
+ 
+ 
+ 
+ function test(cityname) {
+  $.ajax({
+  url : "http://api.wunderground.com/api/bcd56c6506a67ec1/geolookup/conditions/q/CA/"+ cityname +".json",
+  dataType : "jsonp",
+  success : function(parsed_json) {
+  var location = parsed_json['location']['city'];
+  var temp_f = parsed_json['current_observation']['temp_f'];
+  //document.getElementById("inner").append("<h1>girdi</h1>");
+  $('#inner span').text(cityname + " Current Temp: " + temp_f);
+ 
+  //alert("Current temperature in " + location + " is: " + temp_f);
+  }
+  });
+};
+
+</script>
+
+
+<div data-role="page" data-theme="b" id="mainpage">
+	<div data-role="header">
+		<h1>Weather APP</h1>
+	</div>
+	<div data-role="content" id="citylistdiv">
+	<ul data-role="listview" data-inset="true" data-filter="true" id="citylist">
+	</ul>
+	<h2></h2>
+	</div>
+	<div data-role="footer" data-position="fixed">
+		<div data-role="navbar">
+		<ul>
+		<li><a href="#first" data-role="button"  data-icon="alert" data-iconpos="left">asd</a></li>
+		</ul>
+		</div>
+	</div>
+</div>
+<div data-role="page" id="first" data-theme="b">
+	<div data-role="header">
+		<a href="#mainpage" data-rel="back" data-direction="reverse"> Back </a>
+		<h1>Weather APP</h1>
+	</div>
+	<div data-role="content" id="inner"> <h1><span> </span> </h1></div>
+</div>
+
+
+</body>
+</html>
