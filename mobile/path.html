@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.0/jquery.mobile-1.4.0.min.css" />
+<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+<script src="http://code.jquery.com/mobile/1.4.0/jquery.mobile-1.4.0.min.js"></script>
+<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?v=3&sensor=false&language=en"> </script>
+</head>
+<body>
+<script> 
+var i = 2;
+
+			function addMore(){ 
+				if(i==7){	
+					$("#addMore span").text("Max 6 Way Point");
+					$("#addMore").onClick = "";
+				}else
+				{
+					$("#stops").append("<label for='name'>Way Points:</label><div class='ui-input-text ui-body-inherit ui-corner-all ui-shadow-inset'><input type='text' name='target-dest' id='target-dest"+ i +"' value='' /></div>"); 
+					i++;
+				}				
+			}
+			
+		//	 $("#directions-button").click(function(){
+		
+			 
+			 //});
+			
+   			var map;
+            var currentPosition;
+            var directionsDisplay = new google.maps.DirectionsRenderer();         
+            var directionsService = new google.maps.DirectionsService();
+
+            function initialize(lat, lon)
+            {
+                currentPosition = new google.maps.LatLng(lat, lon);
+
+                map = new google.maps.Map(document.getElementById('map_canvas'), {
+                   zoom: 15,
+                   center: currentPosition,
+                   mapTypeId: google.maps.MapTypeId.ROADMAP
+                 });
+
+                directionsDisplay.setMap(map);
+                //directionsDisplay.setPanel($("#instructions-content"));
+
+                 var currentPositionMarker = new google.maps.Marker({
+                    position: currentPosition,
+                    map: map,
+                    title: "Current position"
+                });
+
+                var infowindow = new google.maps.InfoWindow();
+                google.maps.event.addListener(currentPositionMarker, 'click', function() {
+                    infowindow.setContent("Current position: latitude: " + lat +" longitude: " + lon);
+                    infowindow.open(map, currentPositionMarker);
+                });
+            }
+            function locError(){
+            	 alert("The position or the map could not be loaded.");
+            }
+            
+			function locSuccess(position) 
+            {
+                initialize(position.coords.latitude, position.coords.longitude);
+            }
+            
+            $(document).ready(function() 
+            {
+                navigator.geolocation.getCurrentPosition(locSuccess, locError);
+                
+                 $("#directions-button").click(function(){
+                    var targetDestination = $("#target-dest1").val();
+                    
+                var stops = [];
+			 	var targetDestination1 = $("#target-dest1").val();
+			 	var targetDestination2 = $("#target-dest2").val();
+			 	var targetDestination3 = $("#target-dest3").val();
+			 	var targetDestination4 = $("#target-dest4").val();
+			 	var targetDestination5 = $("#target-dest5").val();
+			 	var targetDestination6 = $("#target-dest6").val();
+			 	
+			 	if(targetDestination1)
+			 	{
+			 		stops.push({location:targetDestination1, stopover:true});
+			 	}
+			 	if(targetDestination2)
+			 	{
+			 		stops.push({location:targetDestination2, stopover:true});
+			 	}
+			 	if(targetDestination3)
+			 	{
+			 		stops.push({location:targetDestination3, stopover:true});
+			 	}
+			 	if(targetDestination4)
+			 	{
+			 		stops.push({location:targetDestination4, stopover:true});
+			 	}
+			 	if(targetDestination5)
+			 	{
+			 		stops.push({location:targetDestination5, stopover:true});
+			 	}
+			 	 	if(targetDestination6)
+			 	{
+			 		stops.push({location:targetDestination6, stopover:true});
+			 	}
+			 	
+			 	console.log(stops);
+			 	
+			 	
+                    
+
+                    if (currentPosition && currentPosition != '' && targetDestination && targetDestination != '')
+                    {
+                        var request = {
+                            origin:currentPosition, 
+                            destination:currentPosition,
+                            waypoints:stops,
+                            optimizeWaypoints:true,
+                            travelMode: google.maps.DirectionsTravelMode["DRIVING"]
+                        };
+
+                        directionsService.route(request, function(response, status) {
+                            if (status == google.maps.DirectionsStatus.OK) {
+                                directionsDisplay.setPanel(document.getElementById("instructions-content"));
+                                directionsDisplay.setDirections(response); 
+
+                                // For debuging reasons uncomment
+                                /*
+                                var myRoute = response.routes[0].legs[0];
+                                for (var i = 0; i < myRoute.steps.length; i++) {
+                                  alert(myRoute.steps[i].instructions);
+                                }*/
+                            }
+                        });
+                    }
+                    else
+                    {
+                        alert("The target destination is empty or the current position could not be located.");
+                    }
+                }); 
+            });
+</script>
+<div data-role="page" data-theme="b" id="mainpage">
+	<div data-role="header">
+		<h1>YourWay</h1>
+	</div>
+	<div data-role="content">   
+                <div class="ui-bar-c ui-corner-all ui-shadow" style="padding:1em;">
+                    <div id="map_canvas" style="height:350px;">
+                    
+                    
+                    </div>
+                </div>
+               
+
+                
+                <div data-role="fieldcontain" id="stops">
+                    <label for="name">Way Points:</label>
+                    <input type="text" name="target-dest" id="target-dest1" value="" />
+                </div>
+                <button data-role="button" id="addMore" onclick="addMore();"> <span id="buttonText">Add Another Way Point</span></button>
+                
+                <a href="#" id="directions-button" data-role="button" data-inline="true" data-mini="true">Get Directions</a>
+                
+            </div>
+</div>
+
+
+
+
+</body>
