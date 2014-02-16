@@ -13,14 +13,17 @@
 var i = 2;
 
 			function addMore(){ 
-				if(i==7){	
-					$("#addMore span").text("Max 6 Way Point");
-					$("#addMore").onClick = "";
-				}else
-				{
+				
+				if(i<7){
 					$("#stops").append("<label for='name'>Way Points:</label><div class='ui-input-text ui-body-inherit ui-corner-all ui-shadow-inset'><input type='text' name='target-dest' id='target-dest"+ i +"' value='' /></div>"); 
 					i++;
-				}				
+					
+					if(i==7){	
+					$("#addMore span").text("Max 6 Way Point");
+					$("#addMore").onClick = ""; 
+					}	
+				}			
+								
 			}
 			
 		//	 $("#directions-button").click(function(){
